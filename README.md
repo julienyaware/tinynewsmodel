@@ -2,13 +2,6 @@
 
 This project contains a few models I experimented with, each having different performances. The final model that I recommend you try is `saved_my_trained_model50.pth`. 
 
-## Model Evaluation
-
-To evaluate the trained model, use the following command:
-
-```bash
-python newsTestModel.py --input cleaned_articles.txt --train saved_my_trained_model50.pth --evaluate --batch-size 64 --context-size 128 --n-embd 128 --n-head 4 --n-layer 4 --dropout 0.1
-
 # Files in the Project
 
 ### 1. `newsTestModel.py`
@@ -22,4 +15,13 @@ python newsTestModel.py --input cleaned_articles.txt --train saved_my_trained_mo
 ### 3. `saved_my_trained_model50.pth`
 - **Description:** Final model to be used for evaluation.
 - **Usage:** This file contains the trained model that you can load for testing or further evaluation. The model is saved in PyTorch's `.pth` format.
+
+
+## Model Evaluation
+
+To evaluate the trained model, use the following command: 
+
+```bash
+python newsTestModel.py --input cleaned_articles.txt --train saved_my_trained_model50.pth --evaluate --batch-size 64 --context-size 128 --n-embd 128 --n-head 4 --n-layer 4 --dropout 0.1
+
 
