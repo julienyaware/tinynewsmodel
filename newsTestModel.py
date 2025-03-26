@@ -85,7 +85,6 @@ class TransformerLanguageModel(nn.Module):
     def forward(self, idx, targets=None):
         B, T = idx.shape
         tok_emb = self.token_embedding_table(idx)
-        # Wrap positions with modulo to avoid index errors
         pos_emb = self.position_embedding_table(torch.arange(T, device=idx.device) % self.position_embedding_table.num_embeddings)
         x = tok_emb + pos_emb
         x = self.blocks(x)
@@ -132,13 +131,13 @@ def main():
 
     args = parser.parse_args()
 
-    
+    # Load your dataset
     with open(args.input, "r") as f:
         text = f.read()
 
-    
-    characters = sorted(list(set(text))) 
-    vocab_size = len(characters) 
+    # Build character-level encoding
+    characters = sorted(list(set(text)))
+    vocab_size = len(characters)  
 
     char_to_idx = {ch: i for i, ch in enumerate(characters)}
     idx_to_char = {i: ch for i, ch in enumerate(characters)}
@@ -159,18 +158,17 @@ def main():
         dropout=args.dropout
     ).to(device)
 
-    
+
     if args.evaluate:
         print(f"Evaluating model from {args.train}")
         model.load_state_dict(torch.load(args.train))
 
-       
+    
         evaluate(model, args.context_size, train_data, val_data, char_to_idx, idx_to_char)
     else:
-   
+
         train(model, steps=args.epochs, batch_size=args.batch_size, context_size=args.context_size, train_data=train_data, val_data=val_data, report_frequency=args.report)
         
-      
         torch.save(model.state_dict(), args.train)
         print(f"Model saved to {args.train}")
 
@@ -181,12 +179,11 @@ def evaluate(model, context_size, train_data, val_data, char_to_idx, idx_to_char
         if prompt.lower() == 'exit':
             break
 
-     
         prompt_encoded = torch.tensor([char_to_idx.get(c, 0) for c in prompt], dtype=torch.long).unsqueeze(0).to(device)
 
-        
+      
         with torch.no_grad():
-            for _ in range(500): 
+            for _ in range(700): 
                
                 if prompt_encoded.shape[1] > context_size:
                     input_seq = prompt_encoded[:, -context_size:]
